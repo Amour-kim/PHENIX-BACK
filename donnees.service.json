@@ -1,0 +1,411 @@
+{
+  "id": 12,
+  "type": "audio-visuelle-et-media",
+  "status": "active",
+  "slug": "audio-visuelle-et-media",
+  "title": "Audio visuelle & Média",
+  "shortDescription": "Création de contenus audiovisuels et médias engageants",
+  "fullDescription": "Production de vidéos, podcasts et contenus multimédias pour renforcer votre communication. De la captation à la post-production, nous réalisons des supports captivants pour valoriser votre marque.",
+  "excerpt": "Vidéos, animations, podcasts, captations : des contenus médias pour booster votre image.",
+  "image": {
+    "src": "http://localhost:8080/media/services/media-production.jpg",
+    "alt": "Production audiovisuelle - Création de contenus média",
+    "width": 1600,
+    "height": 900,
+    "caption": "Production de contenus médias professionnels",
+    "credits": "IOI Digital"
+  },
+  "gallery": [
+    {
+      "src": "http://localhost:8080/media/services/media-prod-1.jpg",
+      "alt": "Tournage en studio vidéo",
+      "width": 1200,
+      "height": 630
+    },
+    {
+      "src": "http://localhost:8080/media/services/media-prod-2.jpg",
+      "alt": "Montage vidéo professionnel",
+      "width": 1200,
+      "height": 630
+    }
+  ],
+  "icon": "Video",
+  "isPopular": true,
+  "isFeatured": true,
+  "tags": [
+    "vidéo",
+    "audiovisuel",
+    "podcast",
+    "communication",
+    "montage"
+  ],
+  "order": 6,
+  "values": [
+    {
+      "id": 1,
+      "icon": "ICONS.SETTINGS",
+      "label": "Captation vidéo",
+      "description": "Filmez vos événements, interviews ou démonstrations produits.",
+      "order": 1
+    },
+    {
+      "id": 2,
+      "icon": "ICONS.SETTINGS",
+      "label": "Production audio",
+      "description": "Création de podcasts, habillages sonores et voix off.",
+      "order": 2
+    },
+    {
+      "id": 3,
+      "icon": "ICONS.SETTINGS",
+      "label": "Montage & Post-prod",
+      "description": "Montage vidéo, étalonnage, habillage graphique et mixage audio.",
+      "order": 3
+    }
+  ],
+  "features": [
+    "Captation multi-caméra",
+    "Montage professionnel",
+    "Animation motion design",
+    "Création de jingles & musiques originales",
+    "Sous-titrage & traduction",
+    "Podcast audio & vidéo",
+    "Diffusion multi-plateformes"
+  ],
+  "domains": [
+    {
+      "id": 1,
+      "name": "Vidéos corporate",
+      "description": "Présentez votre entreprise ou vos projets avec des vidéos impactantes.",
+      "icon": "Film",
+      "order": 1
+    },
+    {
+      "id": 2,
+      "name": "Podcasts",
+      "description": "Créez et diffusez vos émissions audio ou vidéo en ligne.",
+      "icon": "Mic",
+      "order": 2
+    },
+    {
+      "id": 3,
+      "name": "Captation événementielle",
+      "description": "Enregistrez vos événements professionnels pour une large diffusion.",
+      "icon": "Camera",
+      "order": 3
+    }
+  ],
+  "approaches": [
+    {
+      "id": 1,
+      "title": "Pré-production",
+      "description": "Préparation du contenu, script et plan de tournage.",
+      "icon": "PenTool",
+      "steps": [
+        "Brief & objectifs",
+        "Scénarisation",
+        "Repérages & planning",
+        "Préparation technique"
+      ],
+      "order": 1
+    },
+    {
+      "id": 2,
+      "title": "Production",
+      "description": "Captation sur site ou en studio.",
+      "icon": "Camera",
+      "steps": [
+        "Installation",
+        "Tournage",
+        "Suivi de la direction artistique",
+        "Enregistrement audio/vidéo"
+      ],
+      "order": 2
+    },
+    {
+      "id": 3,
+      "title": "Post-production",
+      "description": "Montage, habillage, mixage et livraison des contenus.",
+      "icon": "Edit",
+      "steps": [
+        "Montage",
+        "Habillage graphique",
+        "Mixage sonore",
+        "Export & livrables"
+      ],
+      "order": 3
+    }
+  ],
+  "price": "À partir de 1 800 €",
+  "pricingTiers": [
+    {
+      "id": 1,
+      "name": "Essentiel",
+      "description": "Pour une vidéo simple et efficace",
+      "price": 1800,
+      "period": "project",
+      "currency": "EUR",
+      "features": [
+        "Vidéo 1-2 minutes",
+        "Captation 1/2 journée",
+        "Montage simple",
+        "Habillage graphique basique",
+        "Livraison HD",
+        "1 révision"
+      ],
+      "isPopular": true,
+      "ctaText": "Choisir cette offre",
+      "order": 1
+    },
+    {
+      "id": 2,
+      "name": "Avancé",
+      "description": "Pour des contenus professionnels complets",
+      "price": 3500,
+      "period": "project",
+      "currency": "EUR",
+      "features": [
+        "Vidéo 3-5 minutes",
+        "Captation journée complète",
+        "Montage avancé",
+        "Motion design & habillage pro",
+        "2 formats livrés",
+        "3 révisions"
+      ],
+      "ctaText": "Choisir cette offre",
+      "order": 2
+    },
+    {
+      "id": 3,
+      "name": "Premium",
+      "description": "Pack média complet sur mesure",
+      "price": 6000,
+      "period": "project",
+      "currency": "EUR",
+      "features": [
+        "Film complet",
+        "Captation multi-cam",
+        "Podcast + Vidéo",
+        "Interviews, reportages",
+        "Sous-titrage & multilingue",
+        "Diffusion optimisée"
+      ],
+      "ctaText": "Choisir cette offre",
+      "order": 3
+    }
+  ],
+  "hasFreeTier": true,
+  "freeTierDescription": "Audit de vos supports existants & recommandations gratuites.",
+  "faqs": [
+    {
+      "id": 1,
+      "question": "Quels types de formats livrez-vous ?",
+      "answer": "Nous livrons tous les formats standards pour le web, les réseaux sociaux ou la diffusion télévisée.",
+      "category": "Formats",
+      "order": 1
+    },
+    {
+      "id": 2,
+      "question": "Fournissez-vous les fichiers sources ?",
+      "answer": "Oui, sur demande, nous pouvons vous livrer les fichiers sources du montage ou du mixage audio.",
+      "category": "Technique",
+      "order": 2
+    },
+    {
+      "id": 3,
+      "question": "Est-ce que vous vous déplacez ?",
+      "answer": "Oui, nous intervenons dans toute la France et à l’international selon les projets.",
+      "category": "Logistique",
+      "order": 3
+    }
+  ],
+  "testimonials": [
+    {
+      "id": 1,
+      "author": "Clara Simon",
+      "role": "Responsable Communication",
+      "company": "Groupe Orion",
+      "content": "La vidéo institutionnelle a vraiment permis de renforcer notre image. L’équipe est pro, créative et réactive.",
+      "rating": 5,
+      "date": "2023-11-02",
+      "avatar": "/images/testimonials/avatar-3.jpg",
+      "projectLink": "https://www.groupe-orion.com"
+    },
+    {
+      "id": 2,
+      "author": "Yassine B.",
+      "role": "Fondateur",
+      "company": "Studio Loop",
+      "content": "Montage soigné, storytelling maîtrisé, diffusion rapide. Un service audiovisuel au top.",
+      "rating": 5,
+      "date": "2024-01-18",
+      "avatar": "/images/testimonials/avatar-4.jpg"
+    }
+  ],
+  "relatedServices": [
+    1,
+    4
+  ],
+  "technologies": [
+    "Adobe Premiere Pro",
+    "After Effects",
+    "Audition",
+    "DaVinci Resolve"
+  ],
+  "useCases": [
+    {
+      "id": 1,
+      "title": "Film d’entreprise",
+      "description": "Présentez votre société en vidéo de manière professionnelle et engageante.",
+      "icon": "Film",
+      "industries": [
+        "PME",
+        "Industrie",
+        "Services"
+      ],
+      "benefits": [
+        "Meilleure image de marque",
+        "Communication plus engageante",
+        "Support réutilisable"
+      ],
+      "order": 1
+    },
+    {
+      "id": 2,
+      "title": "Podcast professionnel",
+      "description": "Partagez votre expertise sous forme de podcast audio ou vidéo.",
+      "icon": "Mic",
+      "industries": [
+        "Éducation",
+        "Média",
+        "Coaching"
+      ],
+      "benefits": [
+        "Valorisation du savoir-faire",
+        "Accessibilité mobile",
+        "Audience fidèle"
+      ],
+      "order": 2
+    },
+    {
+      "id": 3,
+      "title": "Captation d’événements",
+      "description": "Immortalisez vos conférences, séminaires, lancements produits...",
+      "icon": "Camera",
+      "industries": [
+        "Événementiel",
+        "Tech",
+        "Institutionnel"
+      ],
+      "benefits": [
+        "Souvenir pérenne",
+        "Communication post-événement",
+        "Valorisation sur le web"
+      ],
+      "order": 3
+    }
+  ],
+  "experts": [
+    {
+      "id": 1,
+      "name": "Lucas Fontaine",
+      "role": "Réalisateur & Chef opérateur",
+      "bio": "10 ans d'expérience en réalisation vidéo corporate et institutionnelle.",
+      "avatar": "/images/team/lucas-fontaine.jpg",
+      "experience": 10,
+      "skills": [
+        "Réalisation",
+        "Tournage",
+        "Direction artistique"
+      ],
+      "certifications": [
+        "Adobe Certified Expert Premiere"
+      ],
+      "linkedinUrl": "https://linkedin.com/in/lucasfontaine",
+      "order": 1
+    },
+    {
+      "id": 2,
+      "name": "Julie André",
+      "role": "Monteuse vidéo",
+      "bio": "Spécialiste du montage dynamique, storytelling et motion design.",
+      "avatar": "/images/team/julie-andre.jpg",
+      "experience": 8,
+      "skills": [
+        "Montage",
+        "Motion design",
+        "After Effects"
+      ],
+      "certifications": [
+        "Adobe Certified Professional After Effects"
+      ],
+      "linkedinUrl": "https://linkedin.com/in/julieandre",
+      "order": 2
+    }
+  ],
+  "serviceTechnologies": [
+    {
+      "id": 1,
+      "name": "Adobe Premiere Pro",
+      "description": "Montage vidéo professionnel",
+      "icon": "Film",
+      "category": "Montage",
+      "version": "24.0",
+      "url": "https://www.adobe.com/fr/products/premiere.html",
+      "order": 1
+    },
+    {
+      "id": 2,
+      "name": "After Effects",
+      "description": "Animations graphiques et effets spéciaux",
+      "icon": "Zap",
+      "category": "Motion Design",
+      "version": "24.0",
+      "url": "https://www.adobe.com/fr/products/aftereffects.html",
+      "order": 2
+    },
+    {
+      "id": 3,
+      "name": "Audition",
+      "description": "Montage et mixage audio professionnel",
+      "icon": "Mic",
+      "category": "Audio",
+      "version": "24.0",
+      "url": "https://www.adobe.com/fr/products/audition.html",
+      "order": 3
+    },
+    {
+      "id": 4,
+      "name": "DaVinci Resolve",
+      "description": "Étalonnage et post-production vidéo",
+      "icon": "Adjustments",
+      "category": "Post-prod",
+      "version": "18",
+      "url": "https://www.blackmagicdesign.com/products/davinciresolve/",
+      "order": 4
+    }
+  ],
+  "seo": {
+    "metaTitle": "Production Audiovisuelle & Média | IOI Digital",
+    "metaDescription": "Création de vidéos, podcasts et contenus médias pour valoriser votre communication. Tournage, montage, animation et diffusion.",
+    "metaKeywords": [
+      "vidéo",
+      "podcast",
+      "production média",
+      "montage",
+      "audiovisuel",
+      "motion design"
+    ],
+    "ogTitle": "Production Audiovisuelle sur Mesure - IOI Digital",
+    "ogDescription": "Des contenus médias professionnels pour faire rayonner votre marque",
+    "ogImage": "/images/og/media-production-og.jpg",
+    "canonicalUrl": "https://www.ioi-digital.fr/services/audio-visuelle-et-media"
+  },
+  "createdAt": "2025-08-16T00:00:00.000Z",
+  "updatedAt": "2025-08-16T09:59:59.959005Z",
+  "publishedAt": "2025-08-16T00:00:00.000Z",
+  "_version": 1,
+  "documentationUrl": "/docs/audio-visuelle-et-media",
+  "demoUrl": "/demo/audio-visuelle-et-media",
+  "ctaText": "Demander une démo gratuite"
+}
