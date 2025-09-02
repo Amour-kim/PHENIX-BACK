@@ -50,6 +50,7 @@ class UserSerializer(serializers.ModelSerializer):
             representation.pop('is_staff', None)
         return representation
 
+
 class UserCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User

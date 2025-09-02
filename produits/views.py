@@ -4,7 +4,7 @@ from django.utils import timezone
 from rest_framework import viewsets, status, filters
 from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 from datetime import datetime, timedelta
 
@@ -164,6 +164,7 @@ class SaleViewSet(viewsets.ModelViewSet):
     ).prefetch_related('items__product')
     serializer_class = SaleSerializer
     permission_classes = [AllowAny]
+    # permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = ['customer', 'payment_method', 'payment_status', 'status', 'is_take_away']
     search_fields = ['reference', 'customer_name', 'customer_phone', 'notes']
@@ -187,10 +188,10 @@ class SaleViewSet(viewsets.ModelViewSet):
         return Response(response_data, status=status.HTTP_201_CREATED, headers=headers)
 
     def perform_create(self, serializer):
-        serializer.save(created_by=self.request.user, updated_by=self.request.user)
+        serializer.save()
 
     def perform_update(self, serializer):
-        serializer.save(updated_by=self.request.user)
+        serializer.save()
 
     @action(detail=False, methods=['get'])
     def by_date_range(self, request):
@@ -362,10 +363,10 @@ class SaleItemViewSet(viewsets.ModelViewSet):
         return queryset
 
     def perform_create(self, serializer):
-        serializer.save(created_by=self.request.user, updated_by=self.request.user)
+        serializer.save()
 
     def perform_update(self, serializer):
-        serializer.save(updated_by=self.request.user)
+        serializer.save()
 
 
 # ================================

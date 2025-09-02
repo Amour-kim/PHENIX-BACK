@@ -32,13 +32,15 @@ class UserRoleViewSet(viewsets.ModelViewSet):
 class UserViewSet(viewsets.ModelViewSet):
     """
     API endpoint pour gérer les utilisateurs.
+    Accès public sans restriction.
     """
-    queryset = User.objects.all()
+    queryset = User.objects.all().select_related('role')
     parser_classes = [MultiPartParser, FormParser, JSONParser]
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['username', 'email', 'first_name', 'last_name']
     ordering_fields = ['username', 'email', 'date_joined', 'last_login']
-    
+    permission_classes = [AllowAny]
+
     def get_serializer_class(self):
         """
         Retourne la classe de sérialiseur appropriée selon l'action.
@@ -48,35 +50,6 @@ class UserViewSet(viewsets.ModelViewSet):
         elif self.action in ['update', 'partial_update']:
             return UserUpdateSerializer
         return UserSerializer
-    
-    def get_permissions(self):
-        """
-        Instancie et retourne la liste des permissions requises pour cette vue.
-        """
-        if self.action in ['create', 'login', 'test_connection']:
-            permission_classes = [AllowAny]
-        elif self.action in ['update', 'partial_update', 'destroy']:
-            permission_classes = [IsAdminUser]
-        else:
-            permission_classes = [IsAuthenticated]
-        return [permission() for permission in permission_classes]
-    
-    def get_queryset(self):
-        """
-        Restreint les utilisateurs retournés à l'utilisateur actuellement authentifié,
-        sauf pour les administrateurs qui peuvent voir tous les utilisateurs.
-        """
-        queryset = User.objects.all().select_related('role')
-        user = self.request.user
-        
-        if not user.is_authenticated:
-            return User.objects.none()
-            
-        if not user.is_staff:
-            # Les utilisateurs normaux ne voient que leur propre profil
-            queryset = queryset.filter(id=user.id)
-            
-        return queryset
         
     def retrieve(self, request, *args, **kwargs):
         """

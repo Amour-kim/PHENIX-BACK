@@ -492,8 +492,8 @@ class ExpenseListSerializer(serializers.ModelSerializer):
 
 
 class SaleItemSerializer(serializers.ModelSerializer):
-    created_by = UserSerializer(read_only=True)
-    updated_by = UserSerializer(read_only=True)
+    # created_by = UserSerializer(read_only=True)
+    # updated_by = UserSerializer(read_only=True)
     product = ProductListSerializer(read_only=True)
     product_id = serializers.PrimaryKeyRelatedField(
         queryset=Product.objects.all(),
@@ -514,6 +514,7 @@ class SaleItemSerializer(serializers.ModelSerializer):
             'created_by', 'updated_by', 'created_at', 'updated_at'
         ]
         read_only_fields = ['total_price']
+
 
 class SaleSerializer(serializers.ModelSerializer):
     created_by = UserSerializer(read_only=True)
@@ -555,50 +556,15 @@ class SaleListSerializer(serializers.ModelSerializer):
 
 
 class SaleCreateUpdateSerializer(serializers.ModelSerializer):
-    items = SaleItemSerializer(many=True)
-    
+    # items = SaleItemSerializer(many=True)
     class Meta:
         model = Sale
         fields = [
-            'reference', 'customer', 'sale_date', 'subtotal', 'discount_amount',
+            'customer', 'sale_date', 'subtotal', 'discount_amount',
             'tax_amount', 'payment_method', 'payment_status', 'status',
-            'notes', 'table_number', 'is_take_away', 'customer_name', 'customer_phone', 'items'
+            'notes', 'table_number', 'is_take_away', 'customer_name', 'customer_phone', 'created_by',
         ]
-    
-    @transaction.atomic
-    def create(self, validated_data):
-        items_data = validated_data.pop('items')
-        validated_data['created_by'] = self.context['request'].user
-        validated_data['updated_by'] = self.context['request'].user
-        
-        sale = Sale.objects.create(**validated_data)
-        
-        for item_data in items_data:
-            item_data['created_by'] = self.context['request'].user
-            item_data['updated_by'] = self.context['request'].user
-            SaleItem.objects.create(sale=sale, **item_data)
-        
-        return sale
-    
-    @transaction.atomic
-    def update(self, instance, validated_data):
-        items_data = validated_data.pop('items', None)
-        
-        # Mise à jour de la vente
-        for attr, value in validated_data.items():
-            setattr(instance, attr, value)
-        instance.updated_by = self.context['request'].user
-        instance.save()
-        
-        # Mise à jour des items si fournis
-        if items_data is not None:
-            instance.items.all().delete()
-            for item_data in items_data:
-                item_data['created_by'] = self.context['request'].user
-                item_data['updated_by'] = self.context['request'].user
-                SaleItem.objects.create(sale=instance, **item_data)
-        
-        return instance
+
 
 
 # ================================
