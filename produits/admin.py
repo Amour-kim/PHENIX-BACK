@@ -110,7 +110,7 @@ class SaleItemInline(admin.TabularInline):
     model = SaleItem
     form = SaleItemForm
     extra = 1
-    fields = ('product', 'product_name', 'quantity', 'unit_price', 'discount', 'tax_rate', 'total_price')
+    fields = ('product', 'quantity', 'discount', 'tax_rate', 'total_price')
     readonly_fields = ('total_price', 'created_by', 'updated_by')
     autocomplete_fields = ('product',)
     
@@ -129,7 +129,7 @@ class SaleItemInline(admin.TabularInline):
     def get_readonly_fields(self, request, obj=None):
         readonly_fields = list(self.readonly_fields)
         if obj and hasattr(obj, 'sale') and hasattr(obj.sale, 'status') and hasattr(obj.sale.status, 'code') and obj.sale.status.code in ['COMPLETED', 'REFUNDED']:
-            readonly_fields.extend(['product', 'product_name', 'quantity', 'unit_price', 'discount', 'tax_rate'])
+            readonly_fields.extend(['product', 'quantity', 'discount', 'tax_rate'])
         return readonly_fields
 
 
@@ -663,7 +663,7 @@ class SaleAdmin(admin.ModelAdmin):
     
     fieldsets = (
         ('Informations Générales', {
-            'fields': ('reference', 'customer', 'sale_date', 'table_number', 'is_take_away')
+            'fields': ('customer', 'sale_date', 'table_number', 'is_take_away')
         }),
         ('Client sans compte', {
             'fields': ('customer_name', 'customer_phone'),
@@ -719,9 +719,9 @@ class SaleAdmin(admin.ModelAdmin):
 
 @admin.register(SaleItem)
 class SaleItemAdmin(BaseModelAdmin):
-    list_display = ('sale', 'product', 'product_name', 'quantity', 'unit_price', 'discount', 'total_price', 'created_by', 'created_at')
+    list_display = ('sale', 'product', 'quantity', 'discount', 'total_price', 'created_by', 'created_at')
     list_filter = ('sale__status', 'product__category', 'sale__sale_date', 'created_at', 'created_by')
-    search_fields = ('sale__reference', 'product__name', 'product_name')
+    search_fields = ('sale__reference', 'product__name')
     autocomplete_fields = ('sale', 'product')
     readonly_fields = BaseModelAdmin.readonly_fields + ('total_price',)
 

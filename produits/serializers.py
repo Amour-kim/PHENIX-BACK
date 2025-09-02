@@ -500,11 +500,16 @@ class SaleItemSerializer(serializers.ModelSerializer):
         source='product',
         write_only=True
     )
+    sale_id = serializers.PrimaryKeyRelatedField(
+        queryset=Sale.objects.all(),
+        source='sale',
+        write_only=True
+    )
     
     class Meta:
         model = SaleItem
         fields = [
-            'id', 'product', 'product_id', 'product_name', 'quantity', 'unit_price',
+            'id', 'sale_id', 'product', 'product_id', 'quantity', 
             'discount', 'tax_rate', 'total_price',
             'created_by', 'updated_by', 'created_at', 'updated_at'
         ]

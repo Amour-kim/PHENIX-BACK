@@ -31,7 +31,7 @@ class BaseModelWithUUID(models.Model):
 
 
 # ============= CATÉGORIES MODULAIRES =============
-
+# ok
 class ProductCategory(BaseModelWithUUID):
     """Catégories de produits modulaires"""
     name = models.CharField(max_length=100, unique=True, verbose_name="Nom de la catégorie")
@@ -47,7 +47,7 @@ class ProductCategory(BaseModelWithUUID):
     def __str__(self):
         return self.name
 
-
+# ok
 class ProductUnit(BaseModelWithUUID):
     """Unités de mesure pour les produits"""
     name = models.CharField(max_length=50, unique=True, verbose_name="Nom de l'unité")
@@ -63,7 +63,7 @@ class ProductUnit(BaseModelWithUUID):
     def __str__(self):
         return f"{self.name} ({self.abbreviation})"
 
-
+# ok
 class UserRole(BaseModelWithUUID):
     """Rôles des utilisateurs"""
     name = models.CharField(max_length=50, unique=True, verbose_name="Nom du rôle")
@@ -79,6 +79,7 @@ class UserRole(BaseModelWithUUID):
     def __str__(self):
         return self.name
 
+# ok
 class UserStatus(BaseModelWithUUID):
     """Statuts des utilisateurs"""
     name = models.CharField(max_length=50, unique=True, verbose_name="Nom du statut")
@@ -95,6 +96,8 @@ class UserStatus(BaseModelWithUUID):
     def __str__(self):
         return self.name
 
+
+# ok
 class EntryType(BaseModelWithUUID):
     """Types d'entrée de stock"""
     name = models.CharField(max_length=100, unique=True, verbose_name="Nom du type")
@@ -563,7 +566,7 @@ class Expense(BaseModelWithUUID):
 
 class Sale(BaseModelWithUUID):
     """Modèle pour les ventes"""
-    reference = models.CharField(max_length=100, unique=True, verbose_name="Référence")
+    reference = models.CharField(max_length=100, unique=True, verbose_name="Référence", editable=False)
     customer = models.ForeignKey(
         Customer, 
         on_delete=models.PROTECT, 
@@ -631,6 +634,13 @@ class Sale(BaseModelWithUUID):
         return f"{self.reference} - {self.sale_date.strftime('%d/%m/%Y %H:%M')}"
 
     def save(self, *args, **kwargs):
+        # Générer la référence si c'est une nouvelle vente
+        if not self.pk and not self.reference:
+            date_str = timezone.now().strftime('%Y%m%d%H%M%S')
+            user_id = str(self.created_by.id) if self.created_by and hasattr(self.created_by, 'id') else '0'
+            self.reference = f"REF-PHENIX-{date_str}-{user_id}"
+        
+        # Calculer le montant total
         self.total_amount = self.subtotal - self.discount_amount + self.tax_amount
         super().save(*args, **kwargs)
 
@@ -648,18 +658,11 @@ class SaleItem(BaseModelWithUUID):
         on_delete=models.PROTECT, 
         verbose_name="Produit"
     )
-    product_name = models.CharField(max_length=200, verbose_name="Nom du produit")
     quantity = models.DecimalField(
         max_digits=10, 
         decimal_places=2, 
         validators=[MinValueValidator(0.01)],
         verbose_name="Quantité"
-    )
-    unit_price = models.DecimalField(
-        max_digits=10, 
-        decimal_places=2, 
-        validators=[MinValueValidator(0)],
-        verbose_name="Prix unitaire"
     )
     discount = models.DecimalField(
         max_digits=10, 
@@ -688,11 +691,20 @@ class SaleItem(BaseModelWithUUID):
         verbose_name_plural = "Articles de vente"
 
     def __str__(self):
-        return f"{self.product_name} - {self.quantity}"
+        return f"{self.product.name} - {self.quantity}"
 
     def save(self, *args, **kwargs):
-        base_price = self.quantity * self.unit_price
-        discounted_price = base_price - self.discount
-        tax_amount = discounted_price * (self.tax_rate / 100)
-        self.total_price = discounted_price + tax_amount
+        # Utiliser le prix de vente du produit lié
+        if hasattr(self, 'product') and self.product:
+            base_price = self.quantity * self.product.selling_price
+            discounted_price = base_price - self.discount
+            tax_amount = discounted_price * (self.tax_rate / 100)
+            self.total_price = discounted_price + tax_amount
+            
+            # Mettre à jour le sous-total de la vente parente
+            if hasattr(self, 'sale') and self.sale:
+                self.sale.subtotal = sum(item.total_price for item in self.sale.items.all())
+                self.sale.total_amount = self.sale.subtotal - self.sale.discount_amount + self.sale.tax_amount
+                self.sale.save(update_fields=['subtotal', 'total_amount'])
+                
         super().save(*args, **kwargs)
