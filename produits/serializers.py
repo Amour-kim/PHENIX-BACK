@@ -282,7 +282,7 @@ class ProductListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = [
-            'id', 'name', 'category', 'unit', 'selling_price', 'current_stock', 
+            'id', 'name', 'category', 'unit', 'selling_price', 'current_stock', 'purchase_price',
             'alert_threshold', 'is_active', 'is_low_stock'
         ]
 
@@ -353,19 +353,26 @@ class EntryItemSerializer(serializers.ModelSerializer):
     created_by = UserSerializer(read_only=True)
     updated_by = UserSerializer(read_only=True)
     product = ProductListSerializer(read_only=True)
+    # entry = EntrySerializer(read_only=True)
     product_id = serializers.PrimaryKeyRelatedField(
         queryset=Product.objects.all(),
         source='product',
         write_only=True
     )
+    entry_id = serializers.PrimaryKeyRelatedField(
+        queryset=Entry.objects.all(),
+        source='entry',
+        write_only=True,
+        required=False  # Rendre optionnel pour la mise à jour
+    )
     
     class Meta:
         model = EntryItem
         fields = [
-            'id', 'product', 'product_id', 'quantity', 'unit_price', 'total_price',
+            'id', 'entry', 'entry_id', 'product', 'product_id', 'quantity', 'total_price',
             'expiry_date', 'batch_number', 'created_by', 'updated_by', 'created_at', 'updated_at'
         ]
-        read_only_fields = ['total_price']
+        read_only_fields = ['total_price', 'entry']
 
 
 class EntrySerializer(serializers.ModelSerializer):
@@ -385,50 +392,15 @@ class EntrySerializer(serializers.ModelSerializer):
 
 
 class EntryCreateUpdateSerializer(serializers.ModelSerializer):
-    items = EntryItemSerializer(many=True)
-    
+    # items = EntryItemSerializer(many=True)
     class Meta:
         model = Entry
         fields = [
-            'reference', 'entry_type', 'supplier', 'entry_date', 'notes',
-            'total_amount', 'tax_amount', 'status', 'items'
+            'id', 'entry_type', 'supplier', 'entry_date', 'notes',
+            'total_amount', 'tax_amount', 'status', 'items',
+            'created_by', 'updated_by', 'created_at', 'updated_at'
         ]
-    
-    @transaction.atomic
-    def create(self, validated_data):
-        items_data = validated_data.pop('items')
-        validated_data['created_by'] = self.context['request'].user
-        validated_data['updated_by'] = self.context['request'].user
-        
-        entry = Entry.objects.create(**validated_data)
-        
-        for item_data in items_data:
-            item_data['created_by'] = self.context['request'].user
-            item_data['updated_by'] = self.context['request'].user
-            EntryItem.objects.create(entry=entry, **item_data)
-        
-        return entry
-    
-    @transaction.atomic
-    def update(self, instance, validated_data):
-        items_data = validated_data.pop('items', None)
-        
-        # Mise à jour de l'entrée
-        for attr, value in validated_data.items():
-            setattr(instance, attr, value)
-        instance.updated_by = self.context['request'].user
-        instance.save()
-        
-        # Mise à jour des items si fournis
-        if items_data is not None:
-            instance.items.all().delete()
-            for item_data in items_data:
-                item_data['created_by'] = self.context['request'].user
-                item_data['updated_by'] = self.context['request'].user
-                EntryItem.objects.create(entry=instance, **item_data)
-        
-        return instance
-
+ 
 
 # ================================
 # SERIALIZERS POUR LES DÉPENSES
@@ -492,8 +464,8 @@ class ExpenseListSerializer(serializers.ModelSerializer):
 
 
 class SaleItemSerializer(serializers.ModelSerializer):
-    # created_by = UserSerializer(read_only=True)
-    # updated_by = UserSerializer(read_only=True)
+    created_by = UserSerializer(read_only=True)
+    updated_by = UserSerializer(read_only=True)
     product = ProductListSerializer(read_only=True)
     product_id = serializers.PrimaryKeyRelatedField(
         queryset=Product.objects.all(),

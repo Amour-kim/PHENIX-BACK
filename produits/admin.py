@@ -33,18 +33,21 @@ class BaseModelAdmin(admin.ModelAdmin):
     """Classe de base pour tous les admins avec UUID et traçabilité"""
     list_per_page = 25
     date_hierarchy = 'created_at'
-    readonly_fields = ('id', 'created_at', 'updated_at', 'created_by', 'updated_by')
     
     def save_model(self, request, obj, form, change):
         if not obj.pk:  # création
             obj.created_by = request.user
+        if hasattr(obj, 'updated_by'):
+            obj.updated_by = request.user
         obj.save()
 
     def get_readonly_fields(self, request, obj=None):
-        readonly_fields = list(super().get_readonly_fields(request, obj))
-        if obj:  # Edition
-            if 'created_by' not in readonly_fields:
-                readonly_fields.append('created_by')
+        readonly_fields = list(super().get_readonly_fields(request, obj) or [])
+        # Ajout des champs de date et d'audit en lecture seule
+        audit_fields = ['id', 'created_at', 'updated_at', 'created_by', 'updated_by']
+        for field in audit_fields:
+            if field not in readonly_fields and hasattr(self.model, field):
+                readonly_fields.append(field)
         return readonly_fields
 
     def get_queryset(self, request):
@@ -81,14 +84,14 @@ class CategoryBaseAdmin(BaseModelAdmin):
 class EntryItemInline(admin.TabularInline):
     model = EntryItem
     extra = 1
-    fields = ('product', 'quantity', 'unit_price', 'total_price', 'expiry_date', 'batch_number')
+    fields = ('product', 'quantity', 'total_price', 'expiry_date', 'batch_number')
     readonly_fields = ('total_price',)
     autocomplete_fields = ('product',)
     
     def get_readonly_fields(self, request, obj=None):
         readonly_fields = list(super().get_readonly_fields(request, obj))
         if obj and obj.status == 'COMPLETED':
-            readonly_fields.extend(['product', 'quantity', 'unit_price', 'expiry_date', 'batch_number'])
+            readonly_fields.extend(['product', 'quantity', 'expiry_date', 'batch_number'])
         return readonly_fields
 
 
@@ -493,7 +496,7 @@ class EntryAdmin(BaseModelAdmin):
     
     fieldsets = (
         ('Informations Générales', {
-            'fields': ('reference', 'entry_type', 'supplier', 'entry_date', 'status')
+            'fields': ('entry_type', 'supplier', 'entry_date', 'status')
         }),
         ('Montants', {
             'fields': ('total_amount', 'tax_amount')
@@ -506,6 +509,14 @@ class EntryAdmin(BaseModelAdmin):
             'classes': ('collapse',)
         })
     )
+    
+    def get_readonly_fields(self, request, obj=None):
+        # Récupère les champs en lecture seule de la classe parente
+        readonly_fields = list(super().get_readonly_fields(request, obj))
+        # Ajoute la référence aux champs en lecture seule si c'est une modification
+        if obj:
+            readonly_fields.append('reference')
+        return readonly_fields
 
     inlines = [EntryItemInline]
     
@@ -530,7 +541,7 @@ class EntryAdmin(BaseModelAdmin):
 
 @admin.register(EntryItem)
 class EntryItemAdmin(BaseModelAdmin):
-    list_display = ('entry', 'product', 'quantity', 'unit_price', 'total_price', 'expiry_date', 'created_by', 'created_at')
+    list_display = ('entry', 'product', 'quantity', 'total_price', 'expiry_date', 'created_by', 'created_at')
     list_filter = ('entry__entry_type', 'product__category', 'expiry_date', 'created_at', 'created_by')
     search_fields = ('entry__reference', 'product__name', 'batch_number')
     autocomplete_fields = ('entry', 'product')

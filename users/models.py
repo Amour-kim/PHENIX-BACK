@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from config.utils import dynamic_updload_path
 
 
 class UserRole(models.Model):
@@ -19,7 +18,7 @@ class UserRole(models.Model):
         return self.name
     
 class User(AbstractUser):
-    profil = models.ImageField(upload_to=dynamic_updload_path)
+    profil = models.ImageField(upload_to="users/images/")
     role = models.ForeignKey(UserRole, on_delete=models.PROTECT, related_name="users", verbose_name="Rôle", null=True, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)

@@ -351,7 +351,7 @@ class UserTimeSlot(BaseModelWithUUID):
 
 class Entry(BaseModelWithUUID):
     """Modèle pour les entrées de stock"""
-    reference = models.CharField(max_length=100, unique=True, verbose_name="Référence")
+    reference = models.CharField(max_length=100, unique=True, verbose_name="Référence", editable=False)
     entry_type = models.ForeignKey(
         EntryType, 
         on_delete=models.PROTECT, 
@@ -399,6 +399,15 @@ class Entry(BaseModelWithUUID):
 
     def __str__(self):
         return f"{self.reference} - {self.entry_date.strftime('%d/%m/%Y')}"
+        
+    def save(self, *args, **kwargs):
+        # Générer la référence si c'est une nouvelle entrée
+        if not self.pk and not self.reference:
+            date_str = timezone.now().strftime('%Y%m%d%H%M%S')
+            user_id = str(self.created_by.id) if self.created_by and hasattr(self.created_by, 'id') else '0'
+            self.reference = f"ENT-PHENIX-{date_str}-{user_id}"
+        
+        super().save(*args, **kwargs)
 
 
 class EntryItem(BaseModelWithUUID):
@@ -420,12 +429,6 @@ class EntryItem(BaseModelWithUUID):
         validators=[MinValueValidator(0.01)],
         verbose_name="Quantité"
     )
-    unit_price = models.DecimalField(
-        max_digits=10, 
-        decimal_places=2, 
-        validators=[MinValueValidator(0)],
-        verbose_name="Prix unitaire"
-    )
     total_price = models.DecimalField(
         max_digits=10, 
         decimal_places=2, 
@@ -444,7 +447,7 @@ class EntryItem(BaseModelWithUUID):
         return f"{self.product.name} - {self.quantity}"
 
     def save(self, *args, **kwargs):
-        self.total_price = self.quantity * self.unit_price
+        self.total_price = self.quantity * self.product.purchase_price
         super().save(*args, **kwargs)
 
 
