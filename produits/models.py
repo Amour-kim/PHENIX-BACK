@@ -642,10 +642,13 @@ class Sale(BaseModelWithUUID):
             date_str = timezone.now().strftime('%Y%m%d%H%M%S')
             user_id = str(self.created_by.id) if self.created_by and hasattr(self.created_by, 'id') else '0'
             self.reference = f"REF-PHENIX-{date_str}-{user_id}"
-        
         # Calculer le montant total
         self.total_amount = self.subtotal - self.discount_amount + self.tax_amount
         super().save(*args, **kwargs)
+
+    def update(self, *args, **kwargs):
+        self.total_amount = self.subtotal - self.discount_amount + self.tax_amount
+        super().update(*args, **kwargs)
 
 
 class SaleItem(BaseModelWithUUID):
@@ -704,10 +707,26 @@ class SaleItem(BaseModelWithUUID):
             tax_amount = discounted_price * (self.tax_rate / 100)
             self.total_price = discounted_price + tax_amount
             
-            # Mettre à jour le sous-total de la vente parente
-            if hasattr(self, 'sale') and self.sale:
-                self.sale.subtotal = sum(item.total_price for item in self.sale.items.all())
-                self.sale.total_amount = self.sale.subtotal - self.sale.discount_amount + self.sale.tax_amount
-                self.sale.save(update_fields=['subtotal', 'total_amount'])
+            # # Mettre à jour le sous-total de la vente parente
+            # if hasattr(self, 'sale') and self.sale:
+            #     self.sale.subtotal = sum(item.total_price for item in self.sale.items.all())
+            #     self.sale.total_amount = self.sale.subtotal - self.sale.discount_amount + self.sale.tax_amount
+            #     self.sale.save(update_fields=['subtotal', 'total_amount'])
                 
         super().save(*args, **kwargs)
+    
+    def update(self, *args, **kwargs):
+        # Utiliser le prix de vente du produit lié
+        if hasattr(self, 'product') and self.product:
+            base_price = self.quantity * self.product.selling_price
+            discounted_price = base_price - self.discount
+            tax_amount = discounted_price * (self.tax_rate / 100)
+            self.total_price = discounted_price + tax_amount
+            
+            # # Mettre à jour le sous-total de la vente parente
+            # if hasattr(self, 'sale') and self.sale:
+            #     self.sale.subtotal = sum(item.total_price for item in self.sale.items.all())
+            #     self.sale.total_amount = self.sale.subtotal - self.sale.discount_amount + self.sale.tax_amount
+            #     self.sale.save(update_fields=['subtotal', 'total_amount'])
+            
+        super().update(*args, **kwargs)

@@ -514,12 +514,14 @@ class SaleListSerializer(serializers.ModelSerializer):
     payment_method = PaymentMethodSerializer(read_only=True)
     status = SaleStatusSerializer(read_only=True)
     items_count = serializers.SerializerMethodField()
+    items = SaleItemSerializer(many=True, read_only=True)
     
     class Meta:
         model = Sale
         fields = [
             'id', 'reference', 'customer', 'customer_name', 'sale_date', 'total_amount',
-            'payment_method', 'status', 'is_take_away', 'items_count'
+            'payment_method', 'status', 'is_take_away', 'items_count', 'created_by',
+            'created_at', 'items', 'subtotal'
         ]
     
     def get_items_count(self, obj):
@@ -536,6 +538,7 @@ class SaleCreateUpdateSerializer(serializers.ModelSerializer):
             'tax_amount', 'payment_method', 'payment_status', 'status',
             'notes', 'table_number', 'is_take_away', 'customer_name', 'customer_phone', 'created_by',
         ]
+
 
 
 
